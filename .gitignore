@@ -1,0 +1,9 @@
+bin/.idea/*
+data/*
+evoked/*
+figures/*
+fsaverage_sym/*
+noise_cov/*
+results/*
+source_activity/*
+template_fwd/*
