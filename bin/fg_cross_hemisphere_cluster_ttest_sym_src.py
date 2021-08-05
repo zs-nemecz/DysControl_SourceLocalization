@@ -74,7 +74,7 @@ method = 'MNE'
 time_windows = [(0.175, 0.335), (0.335, 0.440)]
 
 ## cluster analysis
-n_permutations = 10
+n_permutations = 1024
 p_threshold = 0.05
 cluster_p = 0.05
 
