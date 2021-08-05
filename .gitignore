@@ -2,7 +2,8 @@ bin/.idea/*
 data/*
 evoked/*
 figures/*
-fsaverage_sym/*
+# upload fsaverage_sym 
+#fsaverage_sym/*
 noise_cov/*
 results/*
 source_activity/*
