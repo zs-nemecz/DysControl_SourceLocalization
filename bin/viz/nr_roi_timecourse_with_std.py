@@ -1,9 +1,8 @@
+# This script produces the figures showing the ROI time courses with standard deviation for the Natural Reading results
 
 import os.path as op
-
 import numpy as np
 import mne
-
 import matplotlib
 import matplotlib.pyplot as plt
 plt.rcParams.update({'figure.max_open_warning': 0})
