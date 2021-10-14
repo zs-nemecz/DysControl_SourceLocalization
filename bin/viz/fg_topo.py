@@ -251,7 +251,7 @@ condition = 'normal'
 time_start = str(int(tmin*1000))
 time_end = str(int(tmax*1000))
 
-# create empty stc 
+# create empty stc
 stc_file = op.join(data_folder, condition, method, condition + '_average')
 stc = mne.read_source_estimate(stc_file, 'fsaverage').crop(tmin,tmax)
 stc.data = np.zeros(stc.data.shape)
