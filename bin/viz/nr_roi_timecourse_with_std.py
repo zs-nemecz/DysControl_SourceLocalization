@@ -1,52 +1,35 @@
-#!/usr/bin/env python
-# coding: utf-8
 
-# In[1]:
-
-import pandas as pd
 import os.path as op
-import pickle
+
 import numpy as np
 import mne
-mne.viz.set_3d_backend('pyvista')
+
 import matplotlib
 import matplotlib.pyplot as plt
 plt.rcParams.update({'figure.max_open_warning': 0})
-import matplotlib.patches as mpatches
-import seaborn as sns
 import scipy.stats as sp
 import matplotlib.ticker as tck
 
 
-# In[2]:
-
-
+mne.viz.set_3d_backend('pyvista')
 new_rc_params = {'text.usetex': False,
 "svg.fonttype": 'none'
 }
 matplotlib.rcParams.update(new_rc_params)
-
-
-# In[3]:
-
-alpha=0.3
-cm = 1/2.54
 plt.rcParams['figure.dpi'] = 142
-#plt.rcParams["figure.figsize"] = (18.0*cm,12.0*cm) 
+#plt.rcParams["figure.figsize"] = (18.0*cm,12.0*cm)
 font = {'family' : 'Arial',
         'weight' : 'bold',
         'size'   : 8}
 plt.style.use('default')
-#views for figures
+alpha=0.3
+cm = 1/2.54
 cmap='RdBu_r'
 lw=1.5
 subjects_dir = mne.datasets.sample.data_path() + '/subjects'
 
-
-# In[54]:
-
-
-def x_roi_timecourse_fig(stc, xstc, src, label, mode='mean', ax=None, lc='orange', exponent=1):
+# Function for extracting and plotting data from a label
+def x_roi_timecourse_fig(stc, xstc, src, label, mode='mean', ax=None, exponent=1):
     '''Extract time course data from labels and visualize them.'''
     c_lh=(213/255.0, 94/255.0, 0)
     c_rh= (0, 114/255.0, 178/255.0)
@@ -69,39 +52,21 @@ def x_roi_timecourse_fig(stc, xstc, src, label, mode='mean', ax=None, lc='orange
     # Hide the right and top spines
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
-    
-    #ax.set_title(label.name,  y=-0.4, fontsize=6, weight='bold') 
+
     return ax
 
+# 1. Select labels of interest
+# read labels from atlas and create a dictionary with label.name:index
+mne.datasets.fetch_hcp_mmp_parcellation(subjects_dir=subjects_dir, verbose=True)
 
-# In[5]:
-
+mne.datasets.fetch_aparc_sub_parcellation(subjects_dir=subjects_dir, verbose=True)
 
 labels = mne.read_labels_from_annot('fsaverage', 'aparc_sub')
-for i, label in enumerate(labels):
-    print(i, label.name)
 label_keys = {label.name: i for i,label in enumerate(labels)}
-
-
-# In[6]:
-
-
-mne.datasets.fetch_hcp_mmp_parcellation(subjects_dir=subjects_dir,
-                                        verbose=True)
-
-mne.datasets.fetch_aparc_sub_parcellation(subjects_dir=subjects_dir,
-                                          verbose=True)
 
 hcp_labels = mne.read_labels_from_annot('fsaverage', 'HCPMMP1', 'lh', subjects_dir=subjects_dir)
 
-l_fef = hcp_labels[62]
-l_55b = hcp_labels[29]
-hcp_label_keys = {hcp_label.name: i for i,hcp_label in enumerate(hcp_labels)}
-
-
-# In[7]:
-
-
+# lateral occipital (LO)
 lat_occ_2 = labels[label_keys['lateraloccipital_2-lh']]
 lat_occ_3 = labels[label_keys['lateraloccipital_3-lh']]
 LO = lat_occ_2.copy()
@@ -109,19 +74,16 @@ LO.vertices = np.concatenate((lat_occ_2.vertices, lat_occ_3.vertices))
 LO.values = np.concatenate((lat_occ_2.values, lat_occ_3.values))
 LO.name = 'LO'
 
-
-# In[8]:
-
-
+# superior premotor (SPM)
 SPM = LO.copy()
+l_fef = hcp_labels[62]
+l_55b = hcp_labels[29]
+hcp_label_keys = {hcp_label.name: i for i,hcp_label in enumerate(hcp_labels)}
 SPM.vertices = np.concatenate((l_fef.vertices,l_55b.vertices))
 SPM.values = np.concatenate((l_fef.values,l_55b.values))
 SPM.name = 'SPM'
 
-
-# In[9]:
-
-
+# inferior premotor (IPM)
 IPM = SPM.copy()
 L_6r = hcp_labels[hcp_label_keys['L_6r_ROI-lh']]
 L_6v = hcp_labels[hcp_label_keys['L_6v_ROI-lh']]
@@ -132,10 +94,7 @@ IPM.vertices = np.concatenate((L_6r.vertices, L_6v.vertices, L_IFJa.vertices, L_
 IPM.values = np.concatenate((L_6r.values, L_6v.values, L_IFJa.values,L_IFJp.values))
 IPM.name = 'IPM'
 
-
-# In[10]:
-
-
+# middle ventral temporal
 it_6 = labels[label_keys['inferiortemporal_6-lh']]
 l1,l2,l3,l4,l5 = it_6.split(5)
 l31, l32 = l3.split(2)
@@ -149,10 +108,6 @@ a_it6 = it_6.copy()
 a_it6.vertices = np.concatenate((l32.vertices,l42.vertices,l43.vertices,l5.vertices))
 a_it6.values = np.concatenate((l32.values,l42.values,l43.values,l5.values))
 a_it6.name = 'aIT6'
-
-
-# In[11]:
-
 
 it_8 = labels[label_keys['inferiortemporal_8-lh']]
 dorsal_it_8, ventral_it_8 = it_8.split(('dorsal', 'ventral'))
@@ -169,10 +124,7 @@ MV.vertices = np.concatenate((ventral_it_8.vertices, fus_3.vertices, fus_4.verti
 MV.values = np.concatenate((ventral_it_8.values, fus_3.values, fus_4.values,ventral_it_7.values, ventral_lat_occ_9.values, p_it6.values))
 MV.name = 'MV'
 
-
-# In[12]:
-
-
+# posterior ventral occipito-temporal
 fus_1 = labels[label_keys['fusiform_1-lh']]
 fus_2 = labels[label_keys['fusiform_2-lh']]
 lat_occ_10 = labels[label_keys['lateraloccipital_10-lh']]
@@ -182,10 +134,7 @@ PV.vertices = np.concatenate((fus_1.vertices, fus_2.vertices, lat_occ_10.vertice
 PV.values = np.concatenate((fus_1.values, fus_2.values,lat_occ_10.values,lat_occ_11.values))
 PV.name = 'PV'
 
-
-# In[13]:
-
-
+# anterior ventral temporal
 it_3 = labels[label_keys['inferiortemporal_3-lh']]
 
 it_4 = labels[label_keys['inferiortemporal_4-lh']]
@@ -194,10 +143,7 @@ AV.vertices = np.concatenate((it_3.vertices, it_4.vertices, a_it6.vertices))#ant
 AV.values = np.concatenate((it_3.values, it_4.values, a_it6.values))#, anterior_it_6.values
 AV.name = 'AV'
 
-
-# In[14]:
-
-
+# superior parietal
 sup_par_10 = labels[label_keys['superiorparietal_10-lh']]
 sup_par_11 = labels[label_keys['superiorparietal_11-lh']]
 sup_par_12 = labels[label_keys['superiorparietal_12-lh']]
@@ -207,11 +153,7 @@ SP.vertices = np.concatenate((sup_par_10.vertices, sup_par_11.vertices, sup_par_
 SP.values = np.concatenate((sup_par_10.values, sup_par_11.values, sup_par_12.values, sup_par_13.values))
 SP.name = 'SPT'
 
-
-# In[15]:
-
-
-#inferiorparietal
+# inferior parietal (IPT)
 inf_par_1 = labels[label_keys['inferiorparietal_1-lh']]
 inf_par_2 = labels[label_keys['inferiorparietal_2-lh']]
 inf_par_3 = labels[label_keys['inferiorparietal_3-lh']]
@@ -227,36 +169,27 @@ IP.vertices = np.concatenate((inf_par_1.vertices, inf_par_2.vertices, inf_par_3.
 IP.values = np.concatenate((inf_par_1.values, inf_par_2.values, inf_par_3.values, inf_par_4.values, inf_par_7.values, inf_par_9.values))
 IP.name = 'IPT'
 
-
-# In[16]:
-
-
-#rois = [LO,PV, MV]
+# define list ROIs for visualization
 rois = [SPM, LO, IPM, PV, SP, MV, IP, AV]
 
 
-# ## Load average data
+# 2. Extract time courses for each condition
 
-# In[25]:
-
-
-data_folder = 'D:\\Zsuzsa\\source_localization\\natural_reading\\ET_regressed_adaptive_alg'
-noise_cov = 'with_reg_noise_cov'
+# define data folders
+data_folder = op.join('..', '..', 'source_activity', 'natural_reading')
 method = 'MNE'
-source_folder = op.join(data_folder, noise_cov, method)
+source_folder = op.join(data_folder, method)
 
-src_fname = "C:\\Users\\Zsuzsa\\mne_data\\MNE-fsaverage-data\\fsaverage\\bem\\fsaverage-ico-5-src.fif"
+src_fname = op.join(mne.datasets.fetch_fsaverage(), 'bem', 'fsaverage-ico-5-src.fif')
 src = mne.read_source_spaces(src_fname, verbose=True)
 subjects_dir = mne.datasets.sample.data_path() + '/subjects'
-stc_file = op.join(data_folder, noise_cov, method, 'average')
+stc_file = op.join(data_folder, method, 'average')
 average_stc = mne.read_source_estimate(stc_file, 'fsaverage')
 
-
-# Morph average: fsaverage->fsaverage_sym->xhemi->fsaverage
-
-# In[26]:
-
-
+# morphing steps:
+# 1. fsaverage -> fsaverage_sym
+# 2. left to right and vice versa
+# 3. fsaverage_sym -> fsaverage (for labels)
 av_stc_xhemi = mne.compute_source_morph(average_stc, 'fsaverage', 'fsaverage_sym', smooth=5,
                                warn=False,
                                subjects_dir=subjects_dir).apply(average_stc)
@@ -269,25 +202,9 @@ av_stc_xhemi = mne.compute_source_morph(av_stc_xhemi,'fsaverage_sym', 'fsaverage
                                subjects_dir=subjects_dir).apply(av_stc_xhemi)
 
 
-# ## Load individual data
-
-# In[27]:
-
-
-src_fname = "C:\\Users\\Zsuzsa\\mne_data\\MNE-fsaverage-data\\fsaverage\\bem\\fsaverage-ico-5-src.fif"
-src = mne.read_source_spaces(src_fname, verbose=True)
-
-subjects_dir = mne.datasets.sample.data_path() + '/subjects'
-data_folder = 'D:\\Zsuzsa\\source_localization\\natural_reading\\ET_regressed_adaptive_alg'
-noise_cov = 'with_reg_noise_cov'
-method = 'MNE'
-source_folder = op.join(data_folder, noise_cov, method)
+# morph and extract for all subjects
 tmin=-0.0
 tmax=0.350
-
-
-# In[28]:
-
 
 subjects = ['842608', '587631', '217720', '059694', '394107', '356349', '044846', '050120', '269257',
             '103183', '862169', '284297', '643438', '048298', '414822', '638838', '390744', '930517',
@@ -295,10 +212,6 @@ subjects = ['842608', '587631', '217720', '059694', '394107', '356349', '044846'
             '822816', '163753', '667207', '424174', '612370', '528213', '009833', '927179', '515155',
             '366394', '133288']
 n_subjects = len(subjects)
-
-
-# In[44]:
-
 
 mode='mean'
 roi = {}
@@ -332,10 +245,7 @@ for subject in subjects:
     stc_data.append(roi_data)
     stc_xhemi_data.append(xroi_data)
 
-
-# In[45]:
-
-
+# create array and calculate STD and SEM
 stc_data=np.array(stc_data)
 stc_xhemi_data=np.array(stc_xhemi_data)
 stc_std = []
@@ -350,10 +260,7 @@ for i in range(len(rois)):
     xhemi_std.append(np.std(stc_xhemi_data[:,i,:],axis=0))
     xhemi_sem.append(sp.sem(stc_xhemi_data[:,i,:],axis=0, ddof=1))
 
-
-# In[55]:
-
-
+# plot
 figure_roi = plt.figure(figsize=(6.5*cm,11*cm), dpi=142.12)
 widths = [1,1]
 heights = [1,1,1,1]
@@ -361,6 +268,7 @@ gs_rois = figure_roi.add_gridspec(ncols=2, nrows=4, width_ratios=widths,
                           height_ratios=heights, left=0.15, right=0.970, bottom=0.1)
 gs_rois.update(wspace=0.5, hspace=0.3)
 
+# set different exponents for each ROI
 exponents = {LO.name:10**13, SPM.name:10**14, IPM.name:10**14, IP.name:10**13, SP.name:10**13, AV.name:10**13, MV.name:10**13, PV.name:10**13}
 
 for i, label in enumerate(rois):
@@ -371,15 +279,14 @@ for i, label in enumerate(rois):
 
 
     axs1.set_ylabel('{} MSA\n(x e-13 a.u.)'.format(label.name, exponents[label.name]), size=6, labelpad=0.6)
-    #offset.set_visible(False)
-    
-    #axs1.plot(np.arange(140,160), 0.2)
     
     if i > 5:
         axs1.set_xlabel('Time (ms)', fontsize=8, labelpad=0.5) #
         
     if i == 7:
         plt.legend(fontsize=6, markerscale=0.1, prop={'size': 6}, frameon=False)
+
+# add horizontal lines to the bottom to mark time windows
 axs = figure_roi.get_axes()
 axs[0].set_ylim(ymin=0,ymax=12.5)
 axs[1].set_ylim(ymin=0,ymax=10.5)
@@ -399,8 +306,8 @@ axs[7].plot(np.arange(245,295,1),np.full(50, 0.25/2),  color = (0, 158/255.0, 11
 
 plt.show()
 matplotlib.rcParams.update(new_rc_params)
-figure_roi.savefig('nr_rois_av_with_sem_0429_ddof1.svg', figsize=(6.5*cm,11*cm), dpi=600)
-# In[ ]:
+figure_roi.savefig('nr_rois_av_with_sem_1014_ddof1.svg', figsize=(6.5*cm,11*cm), dpi=600)
+
 
 
 

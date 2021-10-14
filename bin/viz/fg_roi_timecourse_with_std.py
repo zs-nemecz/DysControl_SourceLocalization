@@ -16,7 +16,6 @@ new_rc_params = {'text.usetex': False,
 }
 matplotlib.rcParams.update(new_rc_params)
 plt.rcParams['figure.dpi'] = 142
-#plt.rcParams["figure.figsize"] = (18.0*cm,12.0*cm) 
 font = {'family' : 'Arial',
         'weight' : 'bold',
         'size'   : 8}
