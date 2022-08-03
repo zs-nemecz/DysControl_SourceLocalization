@@ -71,7 +71,8 @@ subjects_dir = op.dirname(fs_dir)
 conditions = ['normal', 'armenian', 'phase_rand']
 contrast = ['normal', 'armenian']
 method = 'MNE'
-time_windows = [(0.175, 0.335), (0.335, 0.440)]
+tmin = 0.175
+tmax = 0.335
 
 ## cluster analysis
 n_permutations = 1024
@@ -101,66 +102,65 @@ logging.info('Adjacency computed for {}'.format(src['left_hemi']))
 start_time = time.time()
 logging.info(time.strftime("%H:%M:%S", time.gmtime(start_time)))
 
-for tmin, tmax in time_windows:
-    time_label = str(int(tmin * 1000)) + '-' + str(int(tmax * 1000)) + 'ms'
-    info = {'time-window':time_label,'p threshold for t-test':p_threshold, '# permutations':n_permutations,
-            'Number of subjects':n_subjects}
-    logging.info(info)
+time_label = str(int(tmin * 1000)) + '-' + str(int(tmax * 1000)) + 'ms'
+info = {'time-window':time_label,'p threshold for t-test':p_threshold, '# permutations':n_permutations,
+        'Number of subjects':n_subjects}
+logging.info(info)
 
-    logging.info('.....................................{}.....................................'.format(method))
-    out_folder = op.join('..', 'results', task, 'cross_hemi', 'left_hemi', method, 'cluster_timecourse')
-    left_hemi_data = {}
-    right_hemi_data = {}
-    for condition in conditions:
-        logging.info(condition)
-        stc_data = None
-        stc_xhemi_data = None
+logging.info('.....................................{}.....................................'.format(method))
+out_folder = op.join('..', 'results', task, 'cross_hemi', 'left_hemi', method, 'cluster_timecourse')
+left_hemi_data = {}
+right_hemi_data = {}
+for condition in conditions:
+    logging.info(condition)
+    stc_data = None
+    stc_xhemi_data = None
 
-        for subject in subjects:
-            # 6. Read subject data
-            stc_file = op.join(data_folder, condition, method, subject)
-            stc = mne.read_source_estimate(stc_file, 'fsaverage')
-            stc.crop(tmin, tmax)
-            tstep = stc.tstep
+    for subject in subjects:
+        # 6. Read subject data
+        stc_file = op.join(data_folder, condition, method, subject)
+        stc = mne.read_source_estimate(stc_file, 'fsaverage')
+        stc.crop(tmin, tmax)
+        tstep = stc.tstep
 
-            # 7. Morph data to FSAverage_sym and create cross-hemi data
-            # Morph to fsaverage_sym
-            stc = mne.compute_source_morph(stc, subject_to='fsaverage_sym', smooth=5,
-                                           warn=False,
-                                           subjects_dir=subjects_dir).apply(stc)
-            # Compute a morph-matrix mapping the right to the left hemisphere,
-            # and vice-versa.
-            morph = mne.compute_source_morph(stc, 'fsaverage_sym', 'fsaverage_sym',
-                                             spacing=stc.vertices, warn=False,
-                                             subjects_dir=subjects_dir, xhemi=True,
-                                             verbose='error')  # creating morph map
-            stc_xhemi = morph.apply(stc)
-            if np.all(stc_data) is None:
-                stc_data = stc.data
-                stc_xhemi_data = stc_xhemi.data
-            else:
-                stc_data = np.dstack((stc_data, stc.data))
-                stc_xhemi_data = np.dstack((stc_xhemi_data, stc_xhemi.data))
-        logging.info('Collected {} stc data files from {} condition'.format(stc_data.shape[2], condition))
-        # 8. Normalized subtraction
-        X = (stc_data[:, :, :] - stc_xhemi_data[:, :, :]) / (stc_data[:, :, :] + stc_xhemi_data[:, :, :])
+        # 7. Morph data to FSAverage_sym and create cross-hemi data
+        # Morph to fsaverage_sym
+        stc = mne.compute_source_morph(stc, subject_to='fsaverage_sym', smooth=5,
+                                       warn=False,
+                                       subjects_dir=subjects_dir).apply(stc)
+        # Compute a morph-matrix mapping the right to the left hemisphere,
+        # and vice-versa.
+        morph = mne.compute_source_morph(stc, 'fsaverage_sym', 'fsaverage_sym',
+                                         spacing=stc.vertices, warn=False,
+                                         subjects_dir=subjects_dir, xhemi=True,
+                                         verbose='error')  # creating morph map
+        stc_xhemi = morph.apply(stc)
+        if np.all(stc_data) is None:
+            stc_data = stc.data
+            stc_xhemi_data = stc_xhemi.data
+        else:
+            stc_data = np.dstack((stc_data, stc.data))
+            stc_xhemi_data = np.dstack((stc_xhemi_data, stc_xhemi.data))
+    logging.info('Collected {} stc data files from {} condition'.format(stc_data.shape[2], condition))
+    # 8. Normalized subtraction
+    X = (stc_data[:, :, :] - stc_xhemi_data[:, :, :]) / (stc_data[:, :, :] + stc_xhemi_data[:, :, :])
 
-        # 9. Divide data into separate hemispheres
-        shape = X.shape
-        single_hemi = int(shape[0] / 2)
-        l_hemi = X[:single_hemi, :, :]  # take only the first halt, i.e. left hemisphere
-        r_hemi = X[single_hemi:, :, :]  # take second half, only right hemi
-        logging.info('Subtracted left hemi data shape: {}'.format(l_hemi.shape))
-        logging.info('Subtracted right hemi data shape: {}'.format(r_hemi.shape))
-        left_hemi_data[condition] = l_hemi
-        right_hemi_data[condition] = r_hemi
+    # 9. Divide data into separate hemispheres
+    shape = X.shape
+    single_hemi = int(shape[0] / 2)
+    l_hemi = X[:single_hemi, :, :]  # take only the first halt, i.e. left hemisphere
+    r_hemi = X[single_hemi:, :, :]  # take second half, only right hemi
+    logging.info('Subtracted left hemi data shape: {}'.format(l_hemi.shape))
+    logging.info('Subtracted right hemi data shape: {}'.format(r_hemi.shape))
+    left_hemi_data[condition] = l_hemi
+    right_hemi_data[condition] = r_hemi
 
-        # 10. T-test with clustering on contrast data for each condition
-        pickle_fname = op.join(out_folder, 'sym_src_normalized_contrast_' + condition + '_' + time_label + '_nperm-' + str(int(n_permutations)) +'_all_clu.pkl')
-        clu = ttest_clustering(l_hemi, p_threshold, n_subjects, n_permutations, connectivity)
-        #pickle clu object and save stc with good clusters (p<0.05)
-        with open(pickle_fname, 'wb') as f:
-            pickle.dump(clu, f)
+    # 10. T-test with clustering on contrast data for each condition
+    pickle_fname = op.join(out_folder, 'sym_src_normalized_contrast_' + condition + '_' + time_label + '_nperm-' + str(int(n_permutations)) +'_all_clu.pkl')
+    clu = ttest_clustering(l_hemi, p_threshold, n_subjects, n_permutations, connectivity)
+    #pickle clu object and save stc with good clusters (p<0.05)
+    with open(pickle_fname, 'wb') as f:
+        pickle.dump(clu, f)
 
     logging.info('Collected cross hemi contrasts for {} conditions'.format(len(left_hemi_data)))
     logging.info([c for c in left_hemi_data])
