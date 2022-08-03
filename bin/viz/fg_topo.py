@@ -305,32 +305,32 @@ for v in views:
     
     mean_images_175_220.append(img)
 
-mean_220_270 = normal_stc.copy().crop(tmin=0.220,tmax=0.290)
-mean_220_270.data = mean_220_270.data.mean(axis=1).reshape(20484, 1)
-vind, tind = mean_220_270.get_peak(vert_as_index=True, time_as_index=True)
-print(mean_220_270.data[vind, tind])
+mean_220_290 = normal_stc.copy().crop(tmin=0.220,tmax=0.290)
+mean_220_290.data = mean_220_290.data.mean(axis=1).reshape(20484, 1)
+vind, tind = mean_220_290.get_peak(vert_as_index=True, time_as_index=True)
+print(mean_220_290.data[vind, tind])
 
-# snapshots from time window 220-270
-mean_images_220_270 = []
+# snapshots from time window 220-290
+mean_images_220_290 = []
 for v in views:
     l = rois
     if v == 'ventral':
-        brain = brain_snapshot(mean_220_270, views=ventral_view, t=0.220, lims=tpoint_lims, roi=l)
+        brain = brain_snapshot(mean_220_290, views=ventral_view, t=0.220, lims=tpoint_lims, roi=l)
     else:
-        brain = brain_snapshot(mean_220_270, views=v, t=0.220, lims=tpoint_lims, roi=l)
+        brain = brain_snapshot(mean_220_290, views=v, t=0.220, lims=tpoint_lims, roi=l)
     
     img = brain.screenshot(time_viewer=False, mode='rgba') 
     lx, ly,a = img.shape
     # Cropping 
     img = img[lx // c_u: - lx// c_l, :, :]
     
-    mean_images_220_270.append(img)
+    mean_images_220_290.append(img)
 
 # updating parameters again to solve svg issue
 mpl.rcParams.update(new_rc_params)
 
 
-images = [mean_images_175_220, mean_images_220_270]
+images = [mean_images_175_220, mean_images_220_290]
 
 widths = [3, 3, 3]
 heights = [3, 3]
@@ -442,29 +442,29 @@ for v in views:
     
     mean_images_175_220.append(img)
 
-mean_220_270 = armenian_stc.copy().crop(tmin=0.220,tmax=0.290)
-mean_220_270.data = mean_220_270.data.mean(axis=1).reshape(20484, 1)
-tind, vind = mean_220_270.get_peak(vert_as_index=True, time_as_index=True)
-print(mean_220_270.data[tind,vind])
+mean_220_290 = armenian_stc.copy().crop(tmin=0.220,tmax=0.290)
+mean_220_290.data = mean_220_290.data.mean(axis=1).reshape(20484, 1)
+tind, vind = mean_220_290.get_peak(vert_as_index=True, time_as_index=True)
+print(mean_220_290.data[tind,vind])
 
-# snapshots from time window 220-270
-mean_images_220_270 = []
+# snapshots from time window 220-290
+mean_images_220_290 = []
 for v in views:
     l = rois
     if v == 'ventral':
-        brain = brain_snapshot(mean_220_270, views=ventral_view, t=0.220, lims=tpoint_lims, roi=l)
+        brain = brain_snapshot(mean_220_290, views=ventral_view, t=0.220, lims=tpoint_lims, roi=l)
     else:
-        brain = brain_snapshot(mean_220_270, views=v, t=0.220, lims=tpoint_lims, roi=l)
+        brain = brain_snapshot(mean_220_290, views=v, t=0.220, lims=tpoint_lims, roi=l)
     
     img = brain.screenshot(time_viewer=False, mode='rgba') 
     lx, ly,a = img.shape
     # Cropping 
     img = img[lx // c_u: - lx// c_l, :, :]
     
-    mean_images_220_270.append(img)
+    mean_images_220_290.append(img)
 
 
-images = [mean_images_175_220, mean_images_220_270]
+images = [mean_images_175_220, mean_images_220_290]
 
 widths = [3, 3, 3]
 heights = [3, 3]
@@ -571,30 +571,30 @@ for v in views:
     mean_images_175_220.append(img)
 
 
-mean_220_270 = normal_armenian_stc.copy().crop(tmin=0.220,tmax=0.290)
-mean_220_270.data = mean_220_270.data.mean(axis=1).reshape(20484, 1)
-tind, vind = mean_220_270.get_peak(vert_as_index=True, time_as_index=True)
-print(np.max(mean_220_270.data))
+mean_220_290 = normal_armenian_stc.copy().crop(tmin=0.220,tmax=0.290)
+mean_220_290.data = mean_220_290.data.mean(axis=1).reshape(20484, 1)
+tind, vind = mean_220_290.get_peak(vert_as_index=True, time_as_index=True)
+print(np.max(mean_220_290.data))
 
-# snapshots from time window 220-270
-mean_images_220_270 = []
+# snapshots from time window 220-290
+mean_images_220_290 = []
 for v in views:
     l = rois
     if v == 'ventral':
-        brain = brain_snapshot(mean_220_270, views=ventral_view, t=0.220, lims=tpoint_lims, roi=l)
+        brain = brain_snapshot(mean_220_290, views=ventral_view, t=0.220, lims=tpoint_lims, roi=l)
     else:
-        brain = brain_snapshot(mean_220_270, views=v, t=0.220, lims=tpoint_lims, roi=l)
+        brain = brain_snapshot(mean_220_290, views=v, t=0.220, lims=tpoint_lims, roi=l)
         
     img = brain.screenshot(time_viewer=False, mode='rgba') 
     lx, ly,a = img.shape
     # Cropping 
     img = img[lx // c_u: - lx// c_l, :, :]
     
-    mean_images_220_270.append(img)
+    mean_images_220_290.append(img)
 
 
 
-images = [mean_images_175_220, mean_images_220_270]
+images = [mean_images_175_220, mean_images_220_290]
 
 widths = [3, 3, 3]
 heights = [3, 3]
