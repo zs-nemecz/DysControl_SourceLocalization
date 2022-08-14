@@ -16,15 +16,15 @@ from mne.minimum_norm import make_inverse_operator, apply_inverse
 import logging
 import time
 
-log_fname=op.join('..', 'data', 'natural_reading', 'source_localization_log.txt')
+log_fname=op.join('..', '..', 'data', 'natural_reading', 'source_localization_log.txt')
 logging.basicConfig(filename=log_fname,
                     level=logging.INFO, filemode='a')
 logging.info('--------------------------------------------------------------------------------------------------------')
 
-data_folder = op.join('..', 'data')
+data_folder = op.join('..', '..', 'data')
 task_folder = 'natural_reading'
-out_folder = op.join('..', 'source_activity', task_folder)
-noise_cov_folder = op.join('..', 'noise_cov', task_folder)
+out_folder = op.join('..', '..', 'source_activity', task_folder)
+noise_cov_folder = op.join('..', '..', 'noise_cov', task_folder)
 subjects = ['842608', '587631', '217720', '059694', '394107', '356349', '044846', '050120', '269257',
             '103183', '862169', '284297', '643438', '048298', '414822', '638838', '390744', '930517',
             '093925', '213103', '331536', '205515', '135230', '320268', '319897', '321319', '303786',
@@ -46,7 +46,7 @@ logging.info(time.strftime("%H:%M:%S", time.gmtime(start_time)))
 print(time.strftime("%H:%M:%S", time.gmtime(start_time)))
 
 # 2. Read previously created forward solution (see create_template_fwd.py)
-fwd_fname = op.join('..', 'template_fwd', 'template-fwd.fif')
+fwd_fname = op.join('..', '..', 'template_fwd', 'template-fwd.fif')
 fwd = mne.read_forward_solution(fwd_fname)
 
 for subject in subjects:
@@ -56,7 +56,7 @@ for subject in subjects:
     noise_cov = mne.read_cov(noise_cov_file)
 
     # 4. Read evoked file
-    evoked_file = op.join('..', 'evoked', task_folder, subject + '-ave.fif')
+    evoked_file = op.join('..', '..', 'evoked', task_folder, subject + '-ave.fif')
     evoked = mne.read_evokeds(evoked_file, condition=0, baseline=None, proj=False)
 
     # 5. Make inverse operator

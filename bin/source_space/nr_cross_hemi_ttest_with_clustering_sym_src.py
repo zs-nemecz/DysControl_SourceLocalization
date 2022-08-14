@@ -25,15 +25,15 @@ from mne.stats import (spatio_temporal_cluster_1samp_test)
 
 # Logging settings
 task = 'natural_reading'
-logfile = op.join('..', 'results', task , 'sym_src_t_test_clu.txt')
+logfile = op.join('..', '..', 'results', task , 'sym_src_t_test_clu.txt')
 logging.basicConfig(filename=logfile, level=logging.INFO, filemode='a')
 logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p')
 logging.info('--------------------------------------------------------------------------------------------------------')
 
 # 1. Set data and out folder
-data_folder = op.join('..', 'data')
-source_folder = op.join('..', 'source_activity', task)
-out_folder = op.join('..', 'results', task)
+data_folder = op.join('..', '..', 'data')
+source_folder = op.join('..', '..', 'source_activity', task)
+out_folder = op.join('..', '..', 'results', task)
 # Template subject file directory
 fs_dir = fetch_fsaverage(verbose=True)
 subjects_dir = op.dirname(fs_dir)
@@ -53,7 +53,7 @@ n_permutations = 1024
 
 # 4. Create source spaces: left and right hemisphere
 # Use FSAverage_Sym - Template subject with registration between left and right hemi
-src_fname = op.join('..', 'fsaverage_sym', 'bem', 'fsaverage_sym_ico5-src.fif')
+src_fname = op.join('..', '..', 'fsaverage_sym', 'bem', 'fsaverage_sym_ico5-src.fif')
 lh_src = mne.read_source_spaces(src_fname, verbose=True)
 rh_src = lh_src.copy()
 lh_src.pop()

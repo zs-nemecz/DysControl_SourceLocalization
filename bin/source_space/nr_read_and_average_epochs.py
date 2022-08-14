@@ -16,7 +16,7 @@ import scipy.io as scio
 
 # set paths, subjects, and file names
 task = 'natural_reading'
-data_folder = op.join('..', 'data', task)
+data_folder = op.join('..', '..', 'data', task)
 out_folder = '..'
 old_data_folder = op.join(data_folder, 'preproc_EEG')
 new_data_folder = 'REGROUT_t_avgref'
