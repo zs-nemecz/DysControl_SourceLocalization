@@ -1,9 +1,7 @@
 0. Create template forward model (included in the analysis of the FG experiment too)
 1. Read raw . mat and .set files
 2. Compute evoked response and save evoked file
-3. Make noise covariance matrix:
-    - time-window: -50-0ms
-    - method: 'auto'
+3. Use noise covariance matrix from FG experiment
 4. Read forward solution (template) & make inverse operator
 5. Compute inverse solution
 6. Create cross-hemi contrast
