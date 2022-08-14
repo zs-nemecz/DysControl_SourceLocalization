@@ -10,7 +10,7 @@ plt.rcParams.update({'figure.max_open_warning': 0})
 
 
 # for saving figure versions
-date='1014'
+date='0814'
 
 # figure and matplotlib parameters
 new_rc_params = {'text.usetex': False,
@@ -228,13 +228,13 @@ rois = [LO, IP, temporal_LP, occipital_LP, PV, MV]
 # 2. Extract time courses for each condition
 
 # define data folders
-data_folder = op.join('..', '..', 'source_activity', 'fixed_gaze')
-result_folder = op.join('..', '..','results', 'fixed_gaze', 'cross_hemi')
+data_folder = op.join('..', '..', '..', 'source_activity', 'fixed_gaze')
+result_folder = op.join('..', '..', '..','results', 'fixed_gaze', 'cross_hemi')
 method = 'MNE'
 hemi = 'left_hemi'
 p_threshold = 0.05
 p_threshold = str(p_threshold)
-n_permutations = 1000
+n_permutations = 1024
 n_permutations= str(int(n_permutations))
 
 
@@ -257,7 +257,7 @@ stc = mne.read_source_estimate(stc_file, 'fsaverage').crop(tmin,tmax)
 stc.data = np.zeros(stc.data.shape)
 
 # Load pickle file
-fname = 'normalized_contrast_'+ condition + '_' + time_start + '-' + time_end + 'ms' + '_nperm-' + n_permutations + '_all_clu.pkl'
+fname = 'sym_src_normalized_contrast_'+ condition + '_' + time_start + '-' + time_end + 'ms' + '_nperm-' + n_permutations + '_all_clu.pkl'
 pickle_file = op.join(result_folder, hemi, method, 'cluster_timecourse', fname)
 
 T_obs, clusters, cluster_p_values, H0 = clu = pickle.load( open( pickle_file, "rb" ) )
@@ -392,7 +392,7 @@ stc = mne.read_source_estimate(stc_file, 'fsaverage').crop(tmin,tmax)
 stc.data = np.zeros(stc.data.shape)
 
 # Load pickle file
-fname = 'normalized_contrast_'+ condition + '_' + time_start + '-' + time_end + 'ms' + '_nperm-' + n_permutations + '_all_clu.pkl'
+fname = 'sym_src_normalized_contrast_'+ condition + '_' + time_start + '-' + time_end + 'ms' + '_nperm-' + n_permutations + '_all_clu.pkl'
 pickle_file = op.join(result_folder, hemi, method, 'cluster_timecourse', fname)
 
 T_obs, clusters, cluster_p_values, H0 = clu = pickle.load( open( pickle_file, "rb" ) )
@@ -529,7 +529,7 @@ stc_file = op.join(data_folder, conditions[0], method, conditions[0] + '_average
 stc = mne.read_source_estimate(stc_file, 'fsaverage').crop(tmin,tmax)
 stc.data = np.zeros(stc.data.shape)
 
-result_file = op.join(result_folder, hemi,method, 'cluster_timecourse', 'normalized_contrast_' + conditions[0] + '_' + conditions[1] + time_label + '_nperm-' + str(int(n_permutations))+'_all_clu.pkl')
+result_file = op.join(result_folder, hemi,method, 'cluster_timecourse', 'sym_src_normalized_contrast_' + conditions[0] + '_' + conditions[1] + time_label + '_nperm-' + str(int(n_permutations))+'_all_clu.pkl')
 clu = pickle.load( open( result_file, "rb" ) )
 T_obs, clusters, cluster_p_values, H0 = clu
 n_times, n_vertices = T_obs.shape

@@ -168,8 +168,8 @@ ml_rois = [LO, PV, MV, LP]
 
 # 2. Extract time courses for each condition
 
-# define data folders
-data_folder = op.join('..', '..', 'source_activity', 'fixed_gaze')
+# define data folderss
+data_folder = op.join('..', '..', '..', 'source_activity', 'fixed_gaze')
 src_fname = op.join(mne.datasets.fetch_fsaverage(), 'bem', 'fsaverage-ico-5-src.fif')
 src = mne.read_source_spaces(src_fname, verbose=True)
 noise_cov = 'merged_nc'

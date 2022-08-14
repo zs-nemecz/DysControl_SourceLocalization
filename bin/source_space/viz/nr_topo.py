@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 mne.viz.set_3d_backend('pyvista')
 
 # figure version setting
-date='1014'
+date='0814'
 
 # some matplotlib and plotting parameters
 new_rc_params = {'text.usetex': False,
@@ -93,7 +93,7 @@ def brain_snapshot(stc, views, t, h='lh', cb=False, lims=[0.0, 2.3, 10.0], cmap=
     brain = stc.plot(**tview_kwargs)
     if roi:
         colors=['black']*10
-        #colors=['gold', 'darkorange', 'black', 'olive', 'darkgreen', 'saddlebrown', 'darkslateblue', 'purple']
+        # colors=['gold', 'darkorange', 'black', 'olive', 'darkgreen', 'saddlebrown', 'darkslateblue', 'purple']
         for i,r in enumerate(roi):
             brain.add_label(r, color=colors[i], borders=True)
     brain.show_view(view=views)
@@ -114,7 +114,7 @@ def visualize_cluster_summary(clu, stc_file, method, time_start,time_end, hemi='
 
 # 1. Create custom labels
 subjects_dir = mne.datasets.fetch_fsaverage()
-src_sym = op.join('..', '..','fsaverage_sym','bem', 'fsaverage_sym_ico5-src.fif')
+src_sym = op.join('..', '..', '..','fsaverage_sym','bem', 'fsaverage_sym_ico5-src.fif')
 src_sym = mne.read_source_spaces(src_sym)
 src_fsav = src_fname = op.join(mne.datasets.fetch_fsaverage(), 'bem', 'fsaverage-ico-5-src.fif')
 src_fsav = mne.read_source_spaces(src_fsav)
@@ -251,8 +251,8 @@ SP.name = 'SPT'
 rois = [SPM, LO, IPM, PV, SP, MV, IP, AV]
 
 # paths and data
-data_folder = op.join('..', '..', 'source_activity', 'natural_reading')
-result_folder = op.join('..', '..', 'results', 'natural_reading')
+data_folder = op.join('..', '..', '..', 'source_activity', 'natural_reading')
+result_folder = op.join('..', '..', '..', 'results', 'natural_reading')
 
 method = 'MNE'
 hemi = 'left_hemi'
@@ -330,7 +330,7 @@ print(mne.vertex_to_mni(max_t_vertex, 0, clu4_stc_sym_to_av.subject))
 print('max_t: {:.3f}'.format(clu4_stc_sym_to_av.data[max_t_vind][max_t_lind]))
 print(get_label_from_vertex(max_t_vertex, labels))
 
-tview_kwargs = dict(hemi='lh',views=views, #clim=dict(kind='value', lims=lims),
+tview_kwargs = dict(hemi='lh',views=views,  # clims=dict(kind='value', lims=lims),
                 time_unit='s', smoothing_steps=5, colorbar = True, size = 900, time_viewer = True,
                 colormap='auto', view_layout='horizontal', cortex='bone')
 
@@ -456,7 +456,7 @@ stc = mne.read_source_estimate(stc_file, 'fsaverage_sym').crop(tmin,tmax)
 stc.data = np.zeros(stc.data.shape)
 
 # Load pickle file
-fname = 'normalized_contrast_'+time_start + '-' + time_end + 'ms' + '_nperm-' + n_permutations + '_all_clu.pkl'
+fname = 'sym_src_normalized_contrast_'+time_start + '-' + time_end + 'ms' + '_nperm-' + n_permutations + '_all_clu.pkl'
 pickle_file = op.join(result_folder, hemi, method, 'cluster_timecourse', fname)
 
 T_obs, clusters, cluster_p_values, H0 = clu = pickle.load( open( pickle_file, "rb" ) )

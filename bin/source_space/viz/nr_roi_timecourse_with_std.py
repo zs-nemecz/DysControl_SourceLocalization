@@ -175,7 +175,7 @@ rois = [SPM, LO, IPM, PV, SP, MV, IP, AV]
 # 2. Extract time courses for each condition
 
 # define data folders
-data_folder = op.join('..', '..', 'source_activity', 'natural_reading')
+data_folder = op.join('..', '..', '..', 'source_activity', 'natural_reading')
 method = 'MNE'
 source_folder = op.join(data_folder, method)
 
