@@ -7,3 +7,4 @@ noise_cov/*
 results/*
 source_activity/*
 template_fwd/*
+*.svg
