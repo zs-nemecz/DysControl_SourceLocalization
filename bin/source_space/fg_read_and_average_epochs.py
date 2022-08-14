@@ -2,7 +2,7 @@ import os.path as op
 import mne
 
 task = 'fixed_gaze'
-data_folder = op.join('..', 'data', task)
+data_folder = op.join('..', '..', 'data', task)
 out_folder = '..'
 conditions = ['armenian', 'normal', 'phase_rand']
 

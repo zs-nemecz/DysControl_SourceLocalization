@@ -16,7 +16,7 @@ from mne.minimum_norm import make_inverse_operator, apply_inverse
 
 task = 'fixed_gaze'
 conditions = ['armenian', 'normal', 'phase_rand']
-noise_cov_folder = op.join('..', 'noise_cov', task, 'all')
+noise_cov_folder = op.join('..', '..', 'noise_cov', task, 'all')
 
 subjects = ['842608', '587631', '217720', '059694', '394107', '356349', '044846', '050120', '269257', '103183', '862169',
             '181585', '284297', '643438', '048298', '414822', '638838', '390744', '930517', '093925', '213103', '331536',
@@ -32,12 +32,12 @@ snr = 3.
 lambda2 = 1. / snr ** 2
 
 # 2. Read previously created forward solution (see create_template_fwd.py)
-fwd_fname = op.join('..', 'template_fwd', 'template-fwd.fif')
+fwd_fname = op.join('..', '..', 'template_fwd', 'template-fwd.fif')
 fwd = mne.read_forward_solution(fwd_fname)
 
 for condition in conditions:
-    evoked_dir = op.join('..', 'evoked', task, condition)
-    out_folder = op.join('..', 'source_activity', task, condition)
+    evoked_dir = op.join('..', '..', 'evoked', task, condition)
+    out_folder = op.join('..', '..', 'source_activity', task, condition)
     for subject in subjects:
 
         # 3. Read noise covariance matrix from preprocessed resting state data

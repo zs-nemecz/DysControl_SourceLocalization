@@ -25,7 +25,7 @@ from scipy import stats as stats
 import time
 import logging
 
-logfile = op.join('..', 'results', 'fixed_gaze', 'sym_src_t_test_clu.txt')
+logfile = op.join('..', '..', 'results', 'fixed_gaze', 'sym_src_t_test_clu.txt')
 logging.basicConfig(filename=logfile, level=logging.INFO,
                     filemode='a')
 
@@ -61,9 +61,9 @@ def ttest_clustering(X, p_threshold, n_subjects, n_permutations, connectivity, l
 
 # 2. Set data and out folder
 task='fixed_gaze'
-data_folder = op.join('..', 'source_activity', task)
+data_folder = op.join('..', '..', 'source_activity', task)
 
-src_fname = op.join('..', 'fsaverage_sym', 'bem', 'fsaverage_sym_ico5-src.fif')
+src_fname = op.join('..', '..', 'fsaverage_sym', 'bem', 'fsaverage_sym_ico5-src.fif')
 fs_dir = fetch_fsaverage(verbose=True)
 subjects_dir = op.dirname(fs_dir)
 
@@ -108,7 +108,7 @@ info = {'time-window':time_label,'p threshold for t-test':p_threshold, '# permut
 logging.info(info)
 
 logging.info('.....................................{}.....................................'.format(method))
-out_folder = op.join('..', 'results', task, 'cross_hemi', 'left_hemi', method, 'cluster_timecourse')
+out_folder = op.join('..', '..', 'results', task, 'cross_hemi', 'left_hemi', method, 'cluster_timecourse')
 left_hemi_data = {}
 right_hemi_data = {}
 for condition in conditions:

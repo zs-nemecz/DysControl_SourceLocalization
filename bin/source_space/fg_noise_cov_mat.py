@@ -10,9 +10,9 @@ import os.path as op
 import mne
 
 task = 'fixed_gaze'
-data_folder = op.join('..', 'data', task, 'preproc_EEG')
+data_folder = op.join('..', '..', 'data', task, 'preproc_EEG')
 conditions = ['normal', 'phase_rand','armenian']
-out_folder = op.join('..', 'noise_cov', task, 'all')
+out_folder = op.join('..', '..', 'noise_cov', task, 'all')
 subjects = ['842608', '587631', '217720', '181585', '059694', '394107', '356349', '044846', '050120', '269257', '103183',
             '862169', '284297', '643438', '048298', '414822', '638838', '390744', '930517', '093925', '213103', '331536',
             '205515', '135230', '320268', '319897', '321319', '303786', '822816', '163753', '667207', '424174', '612370',
