@@ -23,7 +23,7 @@ src = op.join(fs_dir, 'bem', 'fsaverage-ico-5-src.fif')
 bem = op.join(fs_dir, 'bem', 'fsaverage-5120-5120-5120-bem-sol.fif')
 
 # 2. Read EEG data for any random subject
-data_folder = op.join('..', 'data', 'natural_reading', 'preproc_EEG')
+data_folder = op.join('..', '..', 'data', 'natural_reading', 'preproc_EEG')
 fname = 'fra_eeg_avgref.set'
 subject = '009833' # reading subject info for channel names
 data_file = op.join(data_folder, subject, fname)
@@ -53,5 +53,5 @@ mlab.show()
 fwd = mne.make_forward_solution(epochs.info, trans=trans, src=src,
                                 bem=bem, eeg=True, mindist=5.0, n_jobs=1)
 print('Channels:\n', fwd.ch_names)
-fwd_fname= op.join('..', 'template_fwd', 'template-fwd.fif')
+fwd_fname= op.join('..', '..', 'template_fwd', 'template-fwd.fif')
 mne.write_forward_solution(fwd_fname,fwd, overwrite=True)
